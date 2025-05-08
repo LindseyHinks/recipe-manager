@@ -1,5 +1,5 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
-import { loginUser } from '../services/auth';
+import React, { createContext, useState, useContext } from 'react';
+import { loginUser, registerUser } from '../services/auth';
 
 export const UserContext = createContext();
 
@@ -31,8 +31,18 @@ export function UserProvider({ children }) {
         setLoggedIn(true);
     }
 
+    async function signup(username, password) {
+        const data = await registerUser(username, password);
+        if (data.error) {
+            return data.error;
+        }
+
+        // if registered successfully, log the user in
+        return await login(username, password);
+    }
+
     async function logout() {
-        localStorage.remove('token');
+        localStorage.removeItem('token');
         setUser(null);
         setToken(null);
         setLoggedIn(false);
@@ -42,6 +52,7 @@ export function UserProvider({ children }) {
         user,
         token,
         login,
+        signup,
         logout,
         loggedIn
     };

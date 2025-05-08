@@ -15,7 +15,7 @@ export default function Navigation() {
                     <Nav.Link href='/cupboard'>Cupboard</Nav.Link>
                 </Nav>
                 <Nav>
-                    {loggedIn && <Nav.Link>Logout</Nav.Link>}
+                    {loggedIn && <Nav.Link href='/logout'>Logout</Nav.Link>}
                     {!loggedIn && <Nav.Link href='/login'>Login</Nav.Link>}
                 </Nav>
             </Navbar.Collapse>

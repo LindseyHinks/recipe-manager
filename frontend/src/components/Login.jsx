@@ -12,6 +12,11 @@ export default function Login() {
 
     const navigate = useNavigate();
 
+    function handleKeyDown(e) {
+        if (e.key === 'Enter')
+            handleLogin();
+    }
+
     async function handleLogin() {
         if (username.trim() === "") {
             setError("Please enter your username");
@@ -31,8 +36,8 @@ export default function Login() {
 
             navigate('/recipes');
         } catch (err) {
-            // this will be from some internal server error
-            setError("Internal server error, please try again later");
+            // probably some internal server/network/JSON decoding error
+            setError("Unexpected error, please try again later");
         }
     }
 
@@ -44,7 +49,7 @@ export default function Login() {
                         <Form.Label className='mt-1'>Username:</Form.Label>
                     </Col>
                     <Col sm="auto">
-                        <Form.Control type="text" onChange={(e) => setUsername(e.target.value)} />
+                        <Form.Control type="text" onChange={(e) => setUsername(e.target.value)} onKeyDown={handleKeyDown} />
                     </Col>
                 </Row>
             </Form.Group>
@@ -54,7 +59,7 @@ export default function Login() {
                         <Form.Label className='mt-1'>Password:</Form.Label>
                     </Col>
                     <Col sm="auto">
-                        <Form.Control type="password" onChange={(e) => setPassword(e.target.value)} />
+                        <Form.Control type="password" onChange={(e) => setPassword(e.target.value)} onKeyDown={handleKeyDown} />
                     </Col>
                 </Row>
             </Form.Group>
