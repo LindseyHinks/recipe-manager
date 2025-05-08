@@ -41,10 +41,10 @@ def login():
     user = User.query.filter_by(username=username).first()
 
     if not user:
-        return jsonify({"error": "User not found"}), 404
+        return jsonify({"error": "User not found"}), 400
     
     if not user.check_password(password):
-        return jsonify({"error": "Invalid credentials"}), 401
+        return jsonify({"error": "Invalid credentials"}), 400
     
     # generate JWT token and send to client
     access_token = create_access_token(identity=user.id)

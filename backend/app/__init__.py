@@ -2,10 +2,14 @@ from flask import Flask
 from .extensions import db, migrate, login_manager
 from flask_jwt_extended import JWTManager
 from .api.auth import auth_bp
+from flask_cors import CORS
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object('app.config.Config')
+
+    # allow requests from react app
+    CORS(app, origins=["http://localhost:5173"])
 
     db.init_app(app)
     migrate.init_app(app, db)
