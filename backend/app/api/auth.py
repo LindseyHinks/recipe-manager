@@ -47,5 +47,6 @@ def login():
         return jsonify({"error": "Invalid credentials"}), 400
     
     # generate JWT token and send to client
-    access_token = create_access_token(identity=user.id)
+    # need to use str for identity, otherwise causes 422 error
+    access_token = create_access_token(identity=str(user.id))
     return jsonify(access_token), 200

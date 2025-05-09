@@ -36,7 +36,7 @@ export default function Signup() {
             
             navigate('/recipes');
         } catch (err) {
-            //  probably some internal server/network/JSON decoding error
+            // probably some internal server/network/JSON decoding error
             setError("Unexpected error, please try again later");
         }
     }
