@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { addToCupboard, getCupboard } from '../services/cupboard';
+import { addToCupboard, deleteFromCupboard, getCupboard } from '../services/cupboard';
 import { CATEGORY_NAMES } from '../constants';
 import { Form, Row, Col, Button, Alert, Accordion } from 'react-bootstrap';
 import { addIngredient, getIngredient } from '../services/ingredients';
+import { Trash } from 'react-bootstrap-icons';
 
 export default function Cupboard() {
     const [cupboard, setCupboard] = useState({});
@@ -108,6 +109,26 @@ export default function Cupboard() {
         }
     }
 
+    async function handleRemoveIngredient(ingId, category) {
+        try {
+            const response = await deleteFromCupboard(ingId);
+            if (response.error) {
+                setError(response.error);
+                return;
+            }
+
+            // remove from our cupboard oject
+            setCupboard(prev => {
+                const updated = {...prev};
+                updated[category] = updated[category].filter(ing => ing.id !== ingId);
+                return updated;
+            });
+        } catch (err) {
+            setError("Unexpected error, please try again later");
+            return;
+        }
+    }
+
     return <div className='m-3'>
         <div className={`d-flex align-items-center ${error ? 'justify-content-between' : 'justify-content-end'}`}>
             {error && <Alert variant="danger" className='w-fit-content p-2 mt-2'>{error}</Alert>}
@@ -145,7 +166,12 @@ export default function Cupboard() {
                         <Accordion.Body>
                             <ul>
                                 {ings.map(ing => (
-                                    <li id={ing.id} key={`ing-${cat}-${ing.name}`}>{ing.name}</li>
+                                    <li key={`ing-${cat}-${ing.name}`} className='mb-2'>
+                                        <Button size="sm" variant="outline-danger" className='me-2' onClick={() => handleRemoveIngredient(ing.id, cat)}>
+                                            <Trash size={14} />
+                                        </Button>
+                                        {ing.name}
+                                    </li>
                                 ))}
                             </ul>
                         </Accordion.Body>
@@ -153,6 +179,5 @@ export default function Cupboard() {
                 </Accordion>
             ))}
         </div>
-
     </div>;
 }

@@ -46,7 +46,7 @@ def add_to_cupboard():
 @jwt_required()
 def delete_from_cupboard(ingredient_id):
     user_id = int(get_jwt_identity())
-    user_ing = UserIngredient.query.filter_by(user_id=user_id, ingredient=ingredient_id).first()
+    user_ing = UserIngredient.query.filter_by(user_id=user_id, ingredient_id=ingredient_id).first()
 
     if not user_ing:
         return jsonify({"error" :"Ingredient not found in cupboard"}), 404
