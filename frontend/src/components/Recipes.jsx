@@ -6,8 +6,10 @@ import { getCupboard } from '../services/cupboard';
 
 export default function Recipes() {
     const [recipes, setRecipes] = useState([]);
+    const [cupboard, setCupboard] = useState([]);
     const [error, setError] = useState("");
     const [addRecipe, setAddRecipe] = useState(false);
+    const [recipeToEdit, setRecipeToEdit] = useState(null);
 
     useEffect(() => {
         async function loadRecipes() {
@@ -38,6 +40,7 @@ export default function Recipes() {
                     });
                     return { ...recipe, ingredients: ings};
                 }));
+                setCupboard(cupboardData);
             } catch (err) {
                 setError("Unexpected error, please try again");
             }
@@ -60,23 +63,24 @@ export default function Recipes() {
                             <Card.Title>{recipe.title}</Card.Title>
                             {recipe.ingredients.some(ing => ing.missing)? (
                                 <>
-                                    <span className='text-danger fw-bold me-2'>Missing:</span>
+                                    <span className='text-danger fw-bold'>Missing:</span>
                                     {recipe.ingredients.map(ing => (
-                                        ing.missing && <Badge bg="danger" key={`missing-${ing.id}`}>{ing.name}</Badge>
+                                        ing.missing && <Badge bg="danger" key={`missing-${ing.id}`} className='ms-2'>{ing.name}</Badge>
                                     ))}
-                                    <div className='d-flex justify-content-end mt-2'>
-                                        <Button size="sm" variant="outline-secondary">Edit</Button>
-                                        <Button size="sm" variant="outline-danger" className='ms-2'>Delete</Button>
-                                    </div>
                                 </>
                             ): (
                                 <span className='text-success fw-bold'>You have all the ingredients!</span>
                             )}
+                            <div className='d-flex justify-content-end mt-2'>
+                                <Button size="sm" variant="outline-secondary" onClick={() => setRecipeToEdit(recipe)}>Edit</Button>
+                                <Button size="sm" variant="outline-danger" className='ms-2'>Delete</Button>
+                            </div>
                         </Card.Body>
                     </Card>
                 </div>
             ))}
         </div>
-        {addRecipe && <AddRecipeModal onHide={() => setAddRecipe(false)} setRecipes={setRecipes} />}
+        {addRecipe && <AddRecipeModal onHide={() => setAddRecipe(false)} setRecipes={setRecipes} cupboard={cupboard} />}
+        {recipeToEdit && <AddRecipeModal onHide={() => setRecipeToEdit(null)} setRecipes={setRecipes} cupboard={cupboard} data={recipeToEdit} />}
     </div>;
 }

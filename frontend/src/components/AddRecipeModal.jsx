@@ -3,12 +3,12 @@ import { CATEGORY_NAMES } from '../constants';
 import { Modal, Alert, Form, Button, Col, Row } from 'react-bootstrap';
 import { Trash } from 'react-bootstrap-icons';
 import { addIngredient, getIngredient } from '../services/ingredients';
-import { createRecipe } from '../services/recipes';
+import { createRecipe, editRecipe } from '../services/recipes';
 
-export default function AddRecipeModal({ onHide, setRecipes }) {
-    const [title, setTitle] = useState("");
-    const [method, setMethod] = useState("");
-    const [ingredients, setIngredients] = useState([]);
+export default function AddRecipeModal({ onHide, setRecipes, data, cupboard }) {
+    const [title, setTitle] = useState(data && data.title ? data.title : "");
+    const [method, setMethod] = useState(data && data.method ? data.method : "");
+    const [ingredients, setIngredients] = useState(data && data.ingredients ? data.ingredients : []);
     const [ingredientName, setIngredientName] = useState("");
     const [ingredientCategory, setIngredientCategory] = useState(Object.keys(CATEGORY_NAMES)[0]);
     const [error, setError] = useState("");
@@ -50,7 +50,7 @@ export default function AddRecipeModal({ onHide, setRecipes }) {
         });
     }
 
-    async function handleAddRecipe() {
+    async function handleSubmit() {
         if (title.trim() === "") {
             setError("Please add a title");
             return;
@@ -76,7 +76,8 @@ export default function AddRecipeModal({ onHide, setRecipes }) {
                             fullIngredients.push({
                                 "id": foundIng.id,
                                 "name": foundIng.name,
-                                "category": foundIng.category
+                                "category": foundIng.category,
+                                "missing": !cupboard.find(i => i.id === foundIng.id)
                             });
                         }
                     });
@@ -91,7 +92,8 @@ export default function AddRecipeModal({ onHide, setRecipes }) {
                     fullIngredients.push({
                         "id": result.id,
                         "name": ing.name.trim(),
-                        "category": ing.category
+                        "category": ing.category,
+                        "missing": !cupboard.find(i => i.id === result.id)
                     });
                 }
             } catch (err) {
@@ -100,6 +102,13 @@ export default function AddRecipeModal({ onHide, setRecipes }) {
             }
         }
 
+        if (data)
+            await handleEditRecipe(ingredientsToSend, fullIngredients);
+        else
+            await handleCreateRecipe(ingredientsToSend, fullIngredients);
+    }
+
+    async function handleCreateRecipe(ingredientsToSend, fullIngredients) {
         try {
             const response = await createRecipe({
                 "title": title.trim(),
@@ -112,24 +121,59 @@ export default function AddRecipeModal({ onHide, setRecipes }) {
             }
             setRecipes(prev => {
                 const updated = [...prev];
-                return updated.push({
+                updated.push({
                     "id": response.id,
                     "title": title.trim(),
                     "method": method,
                     "ingredients": fullIngredients
                 });
+                return updated;
             });
         } catch (err) {
             setError("Unexpected error, please try again later");
             return;
         }
+        onHide();
+    }
 
+    async function handleEditRecipe(ingredientsToSend, fullIngredients) {
+        try {
+            // only include things that have actually changed in the payload
+            const payload = {};
+            if (title.trim() !== data.title)
+                payload['title'] = title.trim();
+            if (method !== data.method)
+                payload['method'] = method;
+            const originalIds = data.ingredients.map(ing => ing.id).sort();
+            if (JSON.stringify(ingredientsToSend) !== JSON.stringify(originalIds))
+                payload['ingredient_ids'] = ingredientsToSend;
+
+            const response = await editRecipe(data.id, payload);
+            if (response.error) {
+                setError(response.error);
+                return;
+            }
+            setRecipes(prev => {
+                const updated = [...prev];
+                const recipeIndex = updated.findIndex(recipe => recipe.id === data.id)
+                updated[recipeIndex] = {
+                    "id": data.id,
+                    "title": title.trim(),
+                    "method": method,
+                    "ingredients": fullIngredients
+                };
+                return updated;
+            });
+        } catch (err) {
+            setError("Unexpected error, please try again later");
+            return;
+        }
         onHide();
     }
 
     return <Modal show={true} centered onHide={onHide} size="lg" keyboard={false} backdrop="static">
         <Modal.Header closeButton>
-            <Modal.Title>Add Recipe</Modal.Title>
+            <Modal.Title>{data ? 'Edit' : 'Add'} Recipe</Modal.Title>
         </Modal.Header>
         <Modal.Body>
             <Form>
@@ -181,7 +225,7 @@ export default function AddRecipeModal({ onHide, setRecipes }) {
         </Modal.Body>
         <Modal.Footer>
             <Button variant="secondary" onClick={onHide}>Cancel</Button>
-            <Button variant="dark" onClick={handleAddRecipe}>Add</Button>
+            <Button variant="dark" onClick={handleSubmit}>{data ? 'Edit' : 'Add'}</Button>
         </Modal.Footer>
     </Modal>;
 }
