@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { addToCupboard, deleteFromCupboard, getCupboard } from '../services/cupboard';
 import { CATEGORY_NAMES } from '../constants';
 import { Form, Row, Col, Button, Alert, Accordion } from 'react-bootstrap';

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { deleteRecipe, getRecipes } from '../services/recipes';
 import { Button, Alert, Card, Badge } from 'react-bootstrap';
 import AddRecipeModal from './AddRecipeModal';
