@@ -5,6 +5,12 @@ import AddRecipeModal from './AddRecipeModal';
 import { getCupboard } from '../services/cupboard';
 import RecipeModal from './RecipeModal';
 
+/**
+ * Allows the user to view their recipes, click on recipes for all details, edit, delete
+ * and add them.
+ * 
+ * @returns {JSX.Element} - Button to add a recipe with recipe cards below.
+ */
 export default function Recipes() {
     const [recipes, setRecipes] = useState([]);
     const [cupboard, setCupboard] = useState([]);
@@ -51,6 +57,13 @@ export default function Recipes() {
         loadRecipes();
     }, []);
 
+    /**
+     * Handles the deletion of the specific recipe. Calls the API
+     * endpoint to delete it and updated the recipes object.
+     * 
+     * @param {Integer} id - The ID of the recipe to delete.
+     * @returns 
+     */
     async function handleDeleteRecipe(id) {
         try {
             const response = await deleteRecipe(id);

@@ -1,5 +1,13 @@
 import { Modal } from 'react-bootstrap';
 
+/**
+ * Shows the given recipe in a modal, displaying whether
+ * ingredients are in the user's cupboard or not.
+ * 
+ * @param {Function} onHide - Function to close the modal.
+ * @param {Object} recipe - The recipe to show in the modal. 
+ * @returns {JSX.Element} - Modal with the recipe details.
+ */
 export default function RecipeModal({ onHide, recipe }) {
 
     return <Modal show={true} onHide={onHide} size="lg" centered >

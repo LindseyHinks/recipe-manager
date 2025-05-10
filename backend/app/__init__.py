@@ -8,6 +8,13 @@ from .api.recipes import recipes_bp
 from flask_cors import CORS
 
 def create_app():
+    """
+    Initialises the Flask application, configures CORS, initialises the database and
+    the JWT manager and registers API blueprints.
+
+    Returns:
+        - The configured Flask app instance.
+    """
     app = Flask(__name__)
     app.config.from_object('app.config.Config')
 

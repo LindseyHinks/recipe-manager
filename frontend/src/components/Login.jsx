@@ -3,6 +3,11 @@ import { Button, Form, Row, Col, Alert } from 'react-bootstrap';
 import { useUserContext } from '../contexts/UserContext';
 import { useNavigate } from 'react-router-dom';
 
+/**
+ * Allows the user to login to the system.
+ * 
+ * @returns {JSX.Element} - Form to login with a username and password input.
+ */
 export default function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -12,11 +17,23 @@ export default function Login() {
 
     const navigate = useNavigate();
 
+    /**
+     * Handles the key down event on the username and password
+     * input boxes. If the enter key is pressed, handleLogin
+     * is called.
+     * 
+     * @param {Event} e - The key down event.
+     */
     function handleKeyDown(e) {
         if (e.key === 'Enter')
             handleLogin();
     }
 
+    /**
+     * Validates the username and password and calls the API endpoint
+     * to login the user. If successful, the user is redirected to
+     * the recipes page.
+     */
     async function handleLogin() {
         if (username.trim() === "") {
             setError("Please enter your username");

@@ -6,6 +6,12 @@ import Recipes from './Recipes';
 import Cupboard from './Cupboard';
 import Logout from './Logout';
 
+/**
+ * Component with the routes in the app which handle the respective redirects
+ * depending on whether the user is logged in or not.
+ * 
+ * @returns {JSX.Element} - The Routes component.
+ */
 export default function AppRoutes() {
     const { loggedIn } = useUserContext();
 

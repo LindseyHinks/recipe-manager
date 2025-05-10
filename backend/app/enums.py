@@ -1,6 +1,7 @@
 import enum
 
 class CategoryEnum(enum.Enum):
+    """Enum of ingredient categories for consistent use across the app"""
     MEAT = "meat"
     FISH = "fish"
     DAIRY = "dairy"

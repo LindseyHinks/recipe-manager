@@ -5,6 +5,15 @@ import { Trash } from 'react-bootstrap-icons';
 import { addIngredient, getIngredient } from '../services/ingredients';
 import { createRecipe, editRecipe } from '../services/recipes';
 
+/**
+ * Modal allowing users to add or edit a recipe.
+ * 
+ * @param {Function} onHide -  Function to close the modal.
+ * @param {Function} setRecipes - Function to set recipes array.
+ * @param {Object} data - The recipe to edit if editing.
+ * @param {Array} cupboard - The user's cupboard of ingredients.
+ * @returns {JSX.Element} - The Modal component.
+ */
 export default function AddRecipeModal({ onHide, setRecipes, data, cupboard }) {
     const [title, setTitle] = useState(data && data.title ? data.title : "");
     const [method, setMethod] = useState(data && data.method ? data.method : "");
@@ -13,16 +22,32 @@ export default function AddRecipeModal({ onHide, setRecipes, data, cupboard }) {
     const [ingredientCategory, setIngredientCategory] = useState(Object.keys(CATEGORY_NAMES)[0]);
     const [error, setError] = useState("");
 
+    /**
+     * Handles input on the ingredient input. Updates ingredientName
+     * and error.
+     * 
+     * @param {Event} e - The input event.
+     */
     function handleIngredientInput(e) {
         setIngredientName(e.target.value);
         setError("");
     }
 
+    /**
+     * Handles the key down event on the ingredient input box. If the
+     * enter key was pressed, calls handleAddIngredient.
+     * 
+     * @param {Event} e - The keydown event.
+     */
     function handleKeyDown(e) {
         if (e.key === 'Enter')
             handleAddIngredient();
     }
 
+    /**
+     * Adds an ingredient to the list of ingredients if not empty and not
+     * already added. Updates the ingredients list and resets the input.
+     */
     function handleAddIngredient() {
         if (ingredientName.trim() === "")
             return;
@@ -43,6 +68,12 @@ export default function AddRecipeModal({ onHide, setRecipes, data, cupboard }) {
         setIngredientCategory(Object.keys(CATEGORY_NAMES)[0]);
     }
 
+    /**
+     * Removes an ingredient from the ingredients list.
+     * 
+     * @param {String} name 
+     * @param {String} category 
+     */
     function handleRemoveIngredient(name, category) {
         setIngredients(prev => {
             const updated = [...prev];
@@ -50,6 +81,11 @@ export default function AddRecipeModal({ onHide, setRecipes, data, cupboard }) {
         });
     }
 
+    /**
+     * Handles the submitting of the form. Validates the form, calls the API to fetch
+     * the IDs of ingredients and to add any ingredients that don't exist. Then, calls
+     * handleEditRecipe if the user is editing, otherwise handleAddRecipe.
+     */
     async function handleSubmit() {
         if (title.trim() === "") {
             setError("Please add a title");
@@ -108,6 +144,14 @@ export default function AddRecipeModal({ onHide, setRecipes, data, cupboard }) {
             await handleCreateRecipe(ingredientsToSend, fullIngredients);
     }
 
+    /**
+     * Handles the creation of a recipe. Calls the API endpoint to create a recipe,
+     * updates the recipes array and finally closes the modal.
+     * 
+     * @param {Array} ingredientsToSend - Array of ingredient IDs.
+     * @param {Array} fullIngredients - Array of ingredients with all details.
+     * @returns 
+     */
     async function handleCreateRecipe(ingredientsToSend, fullIngredients) {
         try {
             const response = await createRecipe({
@@ -136,6 +180,14 @@ export default function AddRecipeModal({ onHide, setRecipes, data, cupboard }) {
         onHide();
     }
 
+    /**
+     * Handles the editing of a recipe. Calls the API endpoint to edit the recipe,
+     * updates the recipes array and finally closes the modal.
+     * 
+     * @param {Array} ingredientsToSend - Array of ingredient IDs.
+     * @param {Array} fullIngredients - Array of ingredients with all details.
+     * @returns 
+     */
     async function handleEditRecipe(ingredientsToSend, fullIngredients) {
         try {
             // only include things that have actually changed in the payload

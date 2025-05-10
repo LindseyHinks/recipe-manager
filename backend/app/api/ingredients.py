@@ -8,7 +8,17 @@ ingredients_bp = Blueprint('ingredients', __name__)
 
 @ingredients_bp.route('/<string:name>', methods=['GET'])
 @jwt_required()
-def get_ingredient(name):        
+def get_ingredient(name: str):      
+    """
+    Retrieve ingredients that match the name given (case-insensitive).
+
+    Parameters:
+        - name (str): The name of the ingredient to retrieve.
+
+    Returns:
+        - 200 with a list of matching ingredients if matches found.
+        - 404 if no matches are found.
+    """  
     # case insensitive search
     ings = Ingredient.query.filter(Ingredient.name.ilike(name)).all()
 
@@ -23,6 +33,14 @@ def get_ingredient(name):
 @ingredients_bp.route('/', methods=['POST'])
 @jwt_required()
 def add_ingredient():
+    """
+    Add a new ingredient to the database.
+
+    Returns:
+        - 201 with ingredient ID if created successfully.
+        - 200 if ingredient already exists.
+        - 400 if the name or category are missing or invalid.
+    """
     data = request.get_json()
     name = data.get('name')
     category = data.get('category')

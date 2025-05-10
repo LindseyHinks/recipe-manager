@@ -7,6 +7,14 @@ auth_bp = Blueprint('auth', __name__)
 
 @auth_bp.route('/register', methods=['POST'])
 def register():
+    """
+    Register a new user.
+
+    Returns:
+        - 201 with success message if successful.
+        - 400 if username or password are missing.
+        - 409 is the username already exists.
+    """
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
@@ -29,6 +37,13 @@ def register():
 
 @auth_bp.route('/login', methods=['POST'])
 def login():
+    """
+    Authenticate a user and return a JWT token upon successful login.
+
+    Returns:
+        - 200 with JWT token if login is successful.
+        - 400 if username and password are invalid or missing.
+    """
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')

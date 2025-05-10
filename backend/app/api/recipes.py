@@ -9,6 +9,13 @@ recipes_bp = Blueprint('recipes', __name__)
 @recipes_bp.route('/', methods=['GET'])
 @jwt_required()
 def get_recipes():
+    """
+    Retrieve all recipes created by the authenticated user, including associated
+    ingredient data for each recipe.
+
+    Returns:
+        - 200 with a list of recipes and their ingredients.
+    """
     user_id = get_jwt_identity()
     recipes = db.session.query(Recipe).filter_by(user_id=user_id).all()
 
@@ -42,6 +49,13 @@ def get_recipes():
 @recipes_bp.route('/', methods=['POST'])
 @jwt_required()
 def create_recipe():
+    """
+    Create a new recipe for the authenticated user.
+
+    Returns:
+        - 201 with the recipe ID if successful,
+        - 400 if title or ingredient are missing or the ingredients do not exist.
+    """
     data = request.get_json()
     title = data.get('title')
     method = data.get('method')
@@ -70,7 +84,18 @@ def create_recipe():
 
 @recipes_bp.route('/<int:recipe_id>', methods=['PUT'])
 @jwt_required()
-def update_recipe(recipe_id):
+def update_recipe(recipe_id: int):
+    """
+    Update an existing recipe.
+
+    Parameters:
+        - recipe_id (int): The ID  of the recipe to update.
+
+    Returns:
+        - 200 with a success message if successful.
+        - 400 if an ingredient doesn't exist.
+        - 404 if the recipe is not found.
+    """
     user_id = get_jwt_identity()
     recipe = Recipe.query.filter_by(id=recipe_id, user_id=user_id).first()
 
@@ -99,7 +124,17 @@ def update_recipe(recipe_id):
 
 @recipes_bp.route('/<int:recipe_id>', methods=['DELETE'])
 @jwt_required()
-def delete_recipe(recipe_id):
+def delete_recipe(recipe_id: int):
+    """
+    Delete a recipe.
+
+    Parameters:
+        - recipe_id (int): The ID of the recipe to delete.
+    
+    Returns:
+        - 200 with success message if successful.
+        - 404 if the recipe is not found.
+    """
     user_id = get_jwt_identity()
     recipe = Recipe.query.filter_by(id=recipe_id, user_id=user_id).first()
 

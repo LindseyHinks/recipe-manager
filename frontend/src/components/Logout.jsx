@@ -2,6 +2,11 @@ import React, { useEffect } from 'react';
 import { useUserContext } from '../contexts/UserContext';
 import { useNavigate } from 'react-router-dom';
 
+/**
+ * Message to show when user is logging out.
+ * 
+ * @returns {JSX.Element} - A message showing the user that they are being currently logged out.
+ */
 export default function Logout() {
     const { logout } = useUserContext();
 

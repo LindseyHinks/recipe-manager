@@ -3,6 +3,11 @@ import { Button, Form, Row, Col, Alert } from 'react-bootstrap';
 import { useUserContext } from '../contexts/UserContext';
 import { useNavigate } from 'react-router-dom';
 
+/**
+ * Allows the user to signup to the system.
+ * 
+ * @returns {JSX.Element} - Form with username and password inputs.
+ */
 export default function Signup() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -12,11 +17,24 @@ export default function Signup() {
 
     const navigate = useNavigate();
     
+    /**
+     * Handles the key down event on the username and
+     * password input boxes. If the enter key is pressed,
+     * calls handleSignUp.
+     * 
+     * @param {Event} e - The key down event.
+     */
     function handleKeyDown(e) {
         if (e.key === 'Enter')
             handleSignup();
     }
 
+    /**
+     * Handles the registration of a new user account. Validates
+     * the username and password and calls the API endpoint
+     * to sign the user up. If successful, the user is redirected
+     * to the recipes page.
+     */
     async function handleSignup() {
         if (username.trim() === "") {
             setError("Please enter a username");

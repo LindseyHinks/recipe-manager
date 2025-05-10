@@ -5,6 +5,12 @@ import { Form, Row, Col, Button, Alert, Accordion } from 'react-bootstrap';
 import { addIngredient, getIngredient } from '../services/ingredients';
 import { Trash } from 'react-bootstrap-icons';
 
+/**
+ * Cupboard component for viewing and editing the user's cupboard.
+ * 
+ * @returns {JSX.Element} - An input, select and button to add ingredients to the
+ * cupboard, and a grid of accordions to view and delete ingredients.
+ */
 export default function Cupboard() {
     const [cupboard, setCupboard] = useState({});
     const [error, setError] = useState("");
@@ -28,6 +34,13 @@ export default function Cupboard() {
         loadCupboard();
     }, []);
 
+    /**
+     * Groups the ingredients in the cupboard by their categories to make
+     * later rendering and processing simpler.
+     * 
+     * @param {Array} data - Array of ingredients in cupboard.
+     * @returns 
+     */
     function groupCupboardByCategories(data) {
         const groupedData = {};
         Object.keys(CATEGORY_NAMES).forEach(cat => groupedData[cat] = []);
@@ -37,11 +50,22 @@ export default function Cupboard() {
         return groupedData;
     }
 
+    /**
+     * Handles the key down event on the input to add a new ingredient. If
+     * the enter key is pressed, calls handleAddNewIngredient.
+     * 
+     * @param {Event} e - The key down event. 
+     */
     function handleNewIngredientKeyDown(e) {
         if (e.key === 'Enter')
             handleAddNewIngredient();
     }
 
+    /**
+     * Handles the addition of a new ingredient to the cupboard. Validates the
+     * ingredient and calls the API endpoint to find if the ingredient exists. If not,
+     * the ingredient is added to the database and then added to the users cupboard.
+     */
     async function handleAddNewIngredient() {
         if (newIngredient.trim() === "")
             return;
@@ -109,6 +133,14 @@ export default function Cupboard() {
         }
     }
 
+    /**
+     * Handles the removal of an ingredient from the cupboard. Calls the API
+     * endpoint to remove the given ingredient and updates the cupboard object.
+     * 
+     * @param {Integer} ingId - The ID of the ingredient to remove.
+     * @param {String} category - The category of the ingredient to remove.
+     * @returns 
+     */
     async function handleRemoveIngredient(ingId, category) {
         try {
             const response = await deleteFromCupboard(ingId);

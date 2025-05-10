@@ -8,6 +8,12 @@ cupboard_bp = Blueprint('cupboard', __name__)
 @cupboard_bp.route('/', methods=['GET'])
 @jwt_required()
 def get_cupboard():
+    """
+    Retrieve the authenticated user's cupboard ingredients.
+
+    Returns:
+        - 200 with a list of ingredient objects.
+    """
     user_id = int(get_jwt_identity())
     user_ingredients = (
         db.session.query(Ingredient)
@@ -24,6 +30,14 @@ def get_cupboard():
 @cupboard_bp.route('/', methods=['POST'])
 @jwt_required()
 def add_to_cupboard():
+    """
+    Add an ingredient to the authenticated user's cupboard.
+
+    Returns:
+        - 201 if the ingredient is added successfully.
+        - 200 is the ingredient is already in the cupboard.
+        - 400 if the ingredient ID is missing.
+    """
     data = request.get_json()
     ing_id = data.get('id')
 
@@ -45,6 +59,13 @@ def add_to_cupboard():
 @cupboard_bp.route('/<int:ingredient_id>', methods=['DELETE'])
 @jwt_required()
 def delete_from_cupboard(ingredient_id):
+    """
+    Remove an ingredient from the user's cupboard.
+
+    Returns:
+        - 200 if the ingredient is successfully deleted.
+        - 404 if the ingredient is not found in the cupboard.
+    """
     user_id = int(get_jwt_identity())
     user_ing = UserIngredient.query.filter_by(user_id=user_id, ingredient_id=ingredient_id).first()
 

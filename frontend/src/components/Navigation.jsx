@@ -2,6 +2,12 @@ import React from 'react';
 import { Navbar, Nav, Container } from 'react-bootstrap';
 import { useUserContext } from '../contexts/UserContext';
 
+/**
+ * The navigation bar showed at the top of all pages, allows user
+ * to view recipes, cupboard and login/logout.
+ * 
+ * @returns {JSX.Element} - Navigation bar.
+ */
 export default function Navigation() {
     const { loggedIn } = useUserContext();
 
