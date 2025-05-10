@@ -9,7 +9,7 @@ export default function Cupboard() {
     const [cupboard, setCupboard] = useState({});
     const [error, setError] = useState("");
     const [newIngredient, setNewIngredient] = useState("");
-    const [newIngCategory, setNewIngCategory] = useState("MEAT");
+    const [newIngCategory, setNewIngCategory] = useState(Object.keys(CATEGORY_NAMES)[0]);
 
     useEffect(() => {
         async function loadCupboard() {

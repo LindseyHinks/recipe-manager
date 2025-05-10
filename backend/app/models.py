@@ -40,6 +40,6 @@ class Recipe(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     method = db.Column(db.Text, nullable=True)
-    image = db.Column(db.String, nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    ingredients = db.relationship('RecipeIngredient', backref='recipe', lazy=True)
+    # cascade to delete recipe ingredients when their recipes are deleted
+    ingredients = db.relationship('RecipeIngredient', backref='recipe', lazy=True, cascade="all, delete-orphan")
