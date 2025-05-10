@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getRecipes } from '../services/recipes';
+import { deleteRecipe, getRecipes } from '../services/recipes';
 import { Button, Alert, Card, Badge } from 'react-bootstrap';
 import AddRecipeModal from './AddRecipeModal';
 import { getCupboard } from '../services/cupboard';
@@ -49,6 +49,25 @@ export default function Recipes() {
         loadRecipes();
     }, []);
 
+    async function handleDeleteRecipe(id) {
+        try {
+            const response = await deleteRecipe(id);
+            if (response.error) {
+                setError(response.error);
+                return;
+            }
+
+            // remove from the recipes array
+            setRecipes(prev => {
+                const updated = [...prev];
+                return updated.filter(recipe => recipe.id !== id);
+            });
+        } catch (err) {
+            setError("Unexpected error, please try again later");
+            return;
+        }
+    }
+
     return <div className='m-3'>
         <div className={`d-flex align-items-center ${error ? 'justify-content-between' : 'justify-content-end'}`}>
             {error && <Alert variant="danger" className='w-fit-content p-2 mt-2'>{error}</Alert>}
@@ -73,7 +92,7 @@ export default function Recipes() {
                             )}
                             <div className='d-flex justify-content-end mt-2'>
                                 <Button size="sm" variant="outline-secondary" onClick={() => setRecipeToEdit(recipe)}>Edit</Button>
-                                <Button size="sm" variant="outline-danger" className='ms-2'>Delete</Button>
+                                <Button size="sm" variant="outline-danger" className='ms-2' onClick={() => handleDeleteRecipe(recipe.id)}>Delete</Button>
                             </div>
                         </Card.Body>
                     </Card>
