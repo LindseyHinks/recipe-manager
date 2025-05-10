@@ -17,3 +17,12 @@
     filter: brightness(0) invert(1); 
 
 }
+
+.card-as-button {
+    cursor: pointer;
+}
+
+.card-as-button:hover {
+    filter: brightness(0.9);
+    scale: 1.02;
+}

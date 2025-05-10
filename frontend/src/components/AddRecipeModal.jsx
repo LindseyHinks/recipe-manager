@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { CATEGORY_NAMES } from '../constants';
 import { Modal, Alert, Form, Button, Col, Row } from 'react-bootstrap';
 import { Trash } from 'react-bootstrap-icons';

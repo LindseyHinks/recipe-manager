@@ -3,6 +3,7 @@ import { deleteRecipe, getRecipes } from '../services/recipes';
 import { Button, Alert, Card, Badge } from 'react-bootstrap';
 import AddRecipeModal from './AddRecipeModal';
 import { getCupboard } from '../services/cupboard';
+import RecipeModal from './RecipeModal';
 
 export default function Recipes() {
     const [recipes, setRecipes] = useState([]);
@@ -10,6 +11,7 @@ export default function Recipes() {
     const [error, setError] = useState("");
     const [addRecipe, setAddRecipe] = useState(false);
     const [recipeToEdit, setRecipeToEdit] = useState(null);
+    const [recipeToShow, setRecipeToShow] = useState(null);
 
     useEffect(() => {
         async function loadRecipes() {
@@ -76,7 +78,7 @@ export default function Recipes() {
         <div className='row'>
             {recipes.map(recipe => (
                 <div className='col-md-4 mb-4' key={recipe.id}>
-                    <Card onClick={console.log("click")}>
+                    <Card onClick={() => setRecipeToShow(recipe)} className='shadow-sm transition card-as-button'>
                         <Card.Img variant='top' src={'/recipe.png'} alt={recipe.title} className='w-50 align-self-center' />
                         <Card.Body>
                             <Card.Title>{recipe.title}</Card.Title>
@@ -99,7 +101,8 @@ export default function Recipes() {
                 </div>
             ))}
         </div>
-        {addRecipe && <AddRecipeModal onHide={() => setAddRecipe(false)} setRecipes={setRecipes} cupboard={cupboard} />}
-        {recipeToEdit && <AddRecipeModal onHide={() => setRecipeToEdit(null)} setRecipes={setRecipes} cupboard={cupboard} data={recipeToEdit} />}
+        {recipeToShow && <RecipeModal onHide={() => setRecipeToShow(null)} recipe={recipeToShow} />}
+        {addRecipe && <AddRecipeModal onHide={() => {setAddRecipe(false); setRecipeToShow(null)}} setRecipes={setRecipes} cupboard={cupboard} />}
+        {recipeToEdit && <AddRecipeModal onHide={() => {setRecipeToEdit(null); setRecipeToShow(null)}} setRecipes={setRecipes} cupboard={cupboard} data={recipeToEdit} />}
     </div>;
 }

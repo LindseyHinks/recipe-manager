@@ -117,7 +117,7 @@ export default function Cupboard() {
                 return;
             }
 
-            // remove from our cupboard oject
+            // remove from our cupboard object
             setCupboard(prev => {
                 const updated = {...prev};
                 updated[category] = updated[category].filter(ing => ing.id !== ingId);
