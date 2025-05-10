@@ -3,6 +3,7 @@ from flask_jwt_extended import jwt_required
 from app.models import Ingredient
 from app import db
 from app.enums import CategoryEnum
+from .utils import safe_commit
 
 ingredients_bp = Blueprint('ingredients', __name__)
 
@@ -58,6 +59,8 @@ def add_ingredient():
     
     ing = Ingredient(name=name, category=category)
     db.session.add(ing)
-    db.session.commit()
-
+    response, status = safe_commit()
+    if response:
+        return response, status
+    
     return jsonify({"id": ing.id, "message": "Ingredient successfully created"}), 201

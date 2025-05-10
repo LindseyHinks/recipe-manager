@@ -2,6 +2,7 @@ from flask import request, jsonify, Blueprint
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.models import Ingredient, UserIngredient
 from app import db
+from .utils import safe_commit
 
 cupboard_bp = Blueprint('cupboard', __name__)
 
@@ -52,8 +53,10 @@ def add_to_cupboard():
     
     user_ing = UserIngredient(user_id=user_id, ingredient_id=ing_id)
     db.session.add(user_ing)
-    db.session.commit()
-
+    response, status = safe_commit()
+    if response:
+        return response, status
+    
     return jsonify({"message": "Ingredient added to cupboard"}), 201
 
 @cupboard_bp.route('/<int:ingredient_id>', methods=['DELETE'])
@@ -73,6 +76,8 @@ def delete_from_cupboard(ingredient_id):
         return jsonify({"error" :"Ingredient not found in cupboard"}), 404
     
     db.session.delete(user_ing)
-    db.session.commit()
-
+    response, status = safe_commit()
+    if response:
+        return response, status
+    
     return jsonify({"message": "Ingredient deleted from cupboard"}), 200

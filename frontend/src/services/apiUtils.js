@@ -22,6 +22,12 @@ export async function apiFetch(path, options = {}) {
 
     const data = await result.json();
 
+    // if the JWT token is expired, remove it and redirect to login
+    if (result.status === 401 || result.status === 422) {
+        localStorage.removeItem('token');
+        window.location.href = '/login';
+    }
+
     if (!result.ok) {
         return {"error": data.error || "API error" };
     }

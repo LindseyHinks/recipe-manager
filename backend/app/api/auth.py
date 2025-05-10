@@ -2,6 +2,7 @@ from flask_jwt_extended import create_access_token
 from flask import request, jsonify, Blueprint
 from app.models import User
 from app import db
+from .utils import safe_commit
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -31,7 +32,9 @@ def register():
     user = User(username=username)
     user.set_password(password)
     db.session.add(user)
-    db.session.commit()
+    response, status = safe_commit()
+    if response:
+        return response, status
 
     return jsonify({"message": "User registered successfully"}), 201
 

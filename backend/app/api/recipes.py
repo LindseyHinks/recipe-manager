@@ -2,7 +2,7 @@ from flask import request, jsonify, Blueprint
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.models import Recipe, RecipeIngredient, Ingredient
 from app import db
-from sqlalchemy.orm import joinedload
+from .utils import safe_commit
 
 recipes_bp = Blueprint('recipes', __name__)
 
@@ -78,8 +78,10 @@ def create_recipe():
     # add each ingredient
     for ing_id in ingredient_ids:
         db.session.add(RecipeIngredient(recipe_id=recipe.id, ingredient_id=ing_id))
-    db.session.commit()
-
+    response, status = safe_commit()
+    if response:
+        return response, status
+    
     return jsonify({"id": recipe.id, "message": "Recipe created successfully"}), 201
 
 @recipes_bp.route('/<int:recipe_id>', methods=['PUT'])
@@ -118,8 +120,10 @@ def update_recipe(recipe_id: int):
         for ing_id in ingredient_ids:
             db.session.add(RecipeIngredient(recipe_id=recipe.id, ingredient_id=ing_id))
     
-    db.session.commit()
-
+    response, status = safe_commit()
+    if response:
+        return response, status
+    
     return jsonify({"message": "Recipe updated"}), 200
 
 @recipes_bp.route('/<int:recipe_id>', methods=['DELETE'])
@@ -142,6 +146,8 @@ def delete_recipe(recipe_id: int):
         return jsonify({"error": "Recipe not found"}), 404
 
     db.session.delete(recipe)
-    db.session.commit()
-    
+    response, status = safe_commit()
+    if response:
+        return response, status
+        
     return jsonify({"message": "Recipe deleted"}), 200

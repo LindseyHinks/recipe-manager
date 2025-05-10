@@ -22,7 +22,7 @@ export function useUserContext() {
 export function UserProvider({ children }) {
     const [user, setUser] = useState(null);
     const [token, setToken] = useState(() => localStorage.getItem("token"));
-    const [loggedIn, setLoggedIn] = useState(user || localStorage.getItem("token"));
+    const [loggedIn, setLoggedIn] = useState(localStorage.getItem("token"));
 
     /**
      * Logs the user in by calling the login API endpoint. If successful,
