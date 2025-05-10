@@ -9,13 +9,10 @@ A full-stack web application built with Flask and React that allows users to man
 2. **Create a virtual environment** by running `python3 -m venv venv` and activate by running `source venv/bin/activate`.
 3. **Install dependencies** by running `pip install -r requirements.txt`.
 4. **Add a .env file** in `/backend` with the following variables:
-`SECRET_KEY=<your_secret>`
-`DATABASE_URL=sqlite:///app.db`
-`JWT_SECRET_KEY=<your_jwt_secret>`
-5. **Initialise the database** by running the following commands:
-`flask db init`
-`flask db migrate -m "Initial migration"`
-`flask db upgrade`
+- `SECRET_KEY=<your_secret>`
+- `DATABASE_URL=sqlite:///app.db`
+- `JWT_SECRET_KEY=<your_jwt_secret>`
+5. **Initialise the database** by running `flask db init`, `flask db migrate -m "Initial migration"`, and`flask db upgrade`
 6. **Run the app** with `python3 run.py` or `flask run` - the app should be accessible, by default, at http://localhost:5000.
 
 ### Frontend
